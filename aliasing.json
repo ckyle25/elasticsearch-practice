@@ -1,0 +1,67 @@
+GET /_cat/indices
+
+
+PUT eventlog-2014-08-01
+{
+  "mappings": {
+    "event": {
+      "properties" : {
+        "error": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}
+
+PUT eventlog-2014-08-02
+{
+  "mappings": {
+    "event": {
+      "properties" : {
+        "error": {
+          "type": "text"
+        }
+      }
+    }
+  }
+}
+
+
+POST eventlog-2014-08-01/event
+{
+  "error": "Something blew up!"
+}
+
+POST eventlog-2014-08-02/event
+{
+  "error": "Another thing blew up!"
+}
+
+PUT _alias
+{
+  "actions":
+  [
+    {
+      "add": {
+              "index": "eventlog-2014-08-01",
+              "alias": "eventlog"
+              }
+    }
+  ]
+}
+
+PUT _alias
+{
+  "actions":
+  [
+    {
+      "add": {
+              "index": "eventlog-2014-08-02",
+              "alias": "eventlog"
+              }
+    }
+  ]
+}
+
+GET eventlog/_search

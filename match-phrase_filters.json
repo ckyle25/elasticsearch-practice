@@ -1,0 +1,75 @@
+DELETE my_blog
+
+PUT my_blog
+{
+  "mappings": {
+    "post": {
+      "properties" : {
+        "user_id": {
+          "type": "integer"
+        },
+        "post_text" : {
+          "type": "text"
+        },
+        "post_date": {
+          "type": "date",
+          "format": "YYYY-MM-DD"
+        },
+        "post_word_count":{
+            "type": "integer"
+        }
+      }
+    }
+  }
+}
+
+POST my_blog/post
+{
+    "post_text": "yet another blog post!",
+    "user_id":1,
+    "post_date":"2014-09-22",
+    "post_word_count":4
+}
+
+POST my_blog/post
+{
+    "post_text": "this is a wonderful blog post!",
+    "user_id":1,
+    "post_date":"2014-09-18",
+    "post_word_count":6
+}
+
+POST my_blog/post
+{
+    "post_text": "I really enjoy writing blog posts",
+    "user_id":2,
+    "post_date":"2014-09-15",
+    "post_word_count":6
+}
+
+// match phrase
+GET my_blog/post/_search
+{
+    "query":{
+        "match_phrase":{
+            "post_text":"wonderful blog"
+        }
+    }
+}
+
+//filter
+GET my_blog/post/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"post_text": "blog"}}
+      ],
+      "filter": [
+          {"term": {"user_id": "2"}},
+          {"range": {"post_date": {"gt":"2014-09-01"}}}
+      ]
+    }
+  }
+}
+
